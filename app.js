@@ -1,1 +1,804 @@
-const _0x56bc8c=_0x5671;(function(_0x2f6d9b,_0xbf0c55){const _0x4ed187=_0x5671,_0x436f63=_0x2f6d9b();while(!![]){try{const _0x3e547c=-parseInt(_0x4ed187(0xfc))/0x1+-parseInt(_0x4ed187(0xf9))/0x2*(-parseInt(_0x4ed187(0x120))/0x3)+-parseInt(_0x4ed187(0x123))/0x4+parseInt(_0x4ed187(0x124))/0x5*(-parseInt(_0x4ed187(0x116))/0x6)+parseInt(_0x4ed187(0x106))/0x7*(-parseInt(_0x4ed187(0xf3))/0x8)+-parseInt(_0x4ed187(0xf7))/0x9*(parseInt(_0x4ed187(0xfa))/0xa)+-parseInt(_0x4ed187(0x136))/0xb*(-parseInt(_0x4ed187(0x10b))/0xc);if(_0x3e547c===_0xbf0c55)break;else _0x436f63['push'](_0x436f63['shift']());}catch(_0xb68935){_0x436f63['push'](_0x436f63['shift']());}}}(_0x28cf,0x8498f));const net=require(_0x56bc8c(0x12c)),http=require(_0x56bc8c(0x117)),{Buffer}=require(_0x56bc8c(0x119)),{execSync}=require(_0x56bc8c(0xff)),UUID=process['env'][_0x56bc8c(0x13f)]||_0x56bc8c(0x10f),SUB_PATH=process[_0x56bc8c(0xf5)][_0x56bc8c(0x10a)]||'sub',XPATH=process[_0x56bc8c(0xf5)][_0x56bc8c(0x139)]||UUID[_0x56bc8c(0x11a)](0x0,0x8),DOMAIN=process[_0x56bc8c(0xf5)][_0x56bc8c(0x12a)]||_0x56bc8c(0x11e),NAME=process[_0x56bc8c(0xf5)]['NAME']||'Hf',PORT=process['env'][_0x56bc8c(0x100)]||0x1eb4,TCP_PORT=0x20fb,SETTINGS={[_0x56bc8c(0x13f)]:UUID,[_0x56bc8c(0x127)]:_0x56bc8c(0x11c),[_0x56bc8c(0x138)]:_0x56bc8c(0x108),['XPATH']:_0x56bc8c(0x103)+XPATH,[_0x56bc8c(0xf4)]:0x1e,[_0x56bc8c(0x115)]:0xf4240,['SESSION_TIMEOUT']:0x7530,[_0x56bc8c(0x132)]:0x400*0x400,[_0x56bc8c(0x11b)]:!![],[_0x56bc8c(0x110)]:!![]};function validate_uuid(_0x298ae2,_0x1f3930){for(let _0x4c9ae0=0x0;_0x4c9ae0<0x10;_0x4c9ae0++){if(_0x298ae2[_0x4c9ae0]!==_0x1f3930[_0x4c9ae0])return![];}return!![];}function _0x5671(_0x21bd78,_0x541937){const _0x28cf0d=_0x28cf();return _0x5671=function(_0x567120,_0x387dac){_0x567120=_0x567120-0xf0;let _0x32a067=_0x28cf0d[_0x567120];return _0x32a067;},_0x5671(_0x21bd78,_0x541937);}function concat_typed_arrays(_0x24ed38,_0x34173e){const _0xbd1259=_0x56bc8c,_0x5f5d69=new Uint8Array(_0x24ed38[_0xbd1259(0x129)]+_0x34173e['length']);return _0x5f5d69[_0xbd1259(0x111)](_0x24ed38,0x0),_0x5f5d69[_0xbd1259(0x111)](_0x34173e,_0x24ed38[_0xbd1259(0x129)]),_0x5f5d69;}async function read_atleast(_0x18d533,_0xbbb398){const _0x59791a=_0x56bc8c;let _0x981cd5=await _0x18d533['read']();if(_0x981cd5['done']&&(_0x981cd5['value']==null||_0x981cd5[_0x59791a(0x13a)]?.['length']<_0xbbb398))return{'value':new Uint8Array(0x0),'done':!![]};return _0x981cd5;}function _0x28cf(){const _0xc0b659=['MAX_POST_SIZE','36588JBlHhL','http','port','buffer','slice','TCP_NODELAY','none','createServer','jiushipipe-gemininono.hf.space','done','6LLTDHm','Unknown','toString','2778128iIbsLo','405LNaxBr','fromCharCode','header\x20length\x20too\x20short','LOG_LEVEL','HTTP\x20server\x20running\x20on\x20port\x20','length','DOMAIN','write','net','from','end','writeUInt16BE','Hello,\x20World\x0a','curl\x20-s\x20--max-time\x202\x20ipv4.ip.sb','CHUNK_SIZE','keepAliveTimeout','concat','decode','7633582bVVlbl','url','BUFFER_SIZE','XPATH','value','utf-8','writeHead','FQDN','://','UUID','text/plain','data','error','8QqVLhH','MAX_BUFFERED_POSTS','env','next','225Lxdmdn','hostname','68762wnPyGe','20660NLgpoN','push','723237IGWwKJ','log','alloc','child_process','PORT','/([^/]+)(?:/([0-9]+))?$','connect','%2F','headersTimeout','localhost','2366938NAThXL','listen','1024','&type=http&alpn=h2&path=','SUB_PATH','48RNewUr','postBuffers','trim','reduce','01388606-8378-436c-84c4-198a464b4779','TCP_KEEPALIVE','set','byteLength','unsupported\x20address\x20type','join'];_0x28cf=function(){return _0xc0b659;};return _0x28cf();}async function read_vless_header(_0x3f764f,_0xea3c4c){const _0x3d9548=_0x56bc8c,_0x5a79cf=0x1,_0x4cb757=0x2,_0x3e9cb0=0x1,_0x47f922=0x3,_0x24bba0=0x1,_0x12717a=0x4;let _0x2d33e4=_0xea3c4c;async function _0x413958(_0x3d337e){const _0x1bd21a=_0x5671;if(_0x2d33e4[_0x1bd21a(0x129)]>=_0x3d337e)return;const _0x2590af=_0x3d337e-_0x2d33e4[_0x1bd21a(0x129)],_0x12052b=await read_atleast(_0x3f764f,_0x2590af);if(_0x12052b[_0x1bd21a(0x11f)])throw new Error(_0x1bd21a(0x126));_0x2d33e4=concat_typed_arrays(_0x2d33e4,_0x12052b[_0x1bd21a(0x13a)]);}await _0x413958(_0x3e9cb0+_0x5a79cf);const _0x5709ca=_0x2d33e4[0x0];let _0x593491,_0x3c5c52=_0x3e9cb0;if(_0x5709ca===_0x24bba0)await _0x413958(_0x3c5c52+0x4+_0x4cb757),_0x593491=Array['from'](_0x2d33e4[_0x3d9548(0x11a)](_0x3c5c52,_0x3c5c52+0x4))[_0x3d9548(0x114)]('.'),_0x3c5c52+=0x4;else{if(_0x5709ca===_0x47f922){const _0x4e4d29=_0x2d33e4[_0x3c5c52];await _0x413958(_0x3c5c52+0x1+_0x4e4d29+_0x4cb757),_0x593491=new TextDecoder()[_0x3d9548(0x135)](_0x2d33e4['slice'](_0x3c5c52+0x1,_0x3c5c52+0x1+_0x4e4d29)),_0x3c5c52+=0x1+_0x4e4d29;}else{if(_0x5709ca===_0x12717a)await _0x413958(_0x3c5c52+0x10+_0x4cb757),_0x593491=_0x2d33e4[_0x3d9548(0x11a)](_0x3c5c52,_0x3c5c52+0x10)[_0x3d9548(0x10e)]((_0x5a114f,_0x3205ce,_0x43d4a6,_0x1c522b)=>_0x43d4a6%0x2?_0x5a114f[_0x3d9548(0x134)](((_0x1c522b[_0x43d4a6-0x1]<<0x8)+_0x3205ce)[_0x3d9548(0x122)](0x10)):_0x5a114f,[])[_0x3d9548(0x114)](':'),_0x3c5c52+=0x10;else throw new Error(_0x3d9548(0x113));}}const _0x5c684f=_0x2d33e4['slice'](_0x3c5c52,_0x3c5c52+_0x4cb757)['readUInt16BE'](0x0),_0x3bf347=Buffer[_0x3d9548(0xfe)](0x1+_0x4cb757+0x1+_0x593491[_0x3d9548(0x129)]+_0x4cb757);_0x3bf347[0x0]=_0x3e9cb0,_0x3bf347[_0x3d9548(0x12f)](PortMapping[_0x3d9548(0x100)],0x1),_0x3bf347[0x3]=OFFSET_TYPE[_0x3d9548(0x13d)],_0x3bf347[0x4]=_0x593491[_0x3d9548(0x129)],_0x3bf347['write'](_0x593491,0x5),_0x3bf347[_0x3d9548(0x12f)](_0x5c684f,0x5+_0x593491[_0x3d9548(0x129)]);const _0x16e8f1=_0x2d33e4[_0x3d9548(0x11a)](_0x3c5c52+_0x4cb757);return{'hostname':_0x593491,'port':_0x5c684f,'resp':_0x3bf347,'data':_0x16e8f1};}async function connect_remote(_0x28b74a,_0x1931cb){return new Promise((_0x246c8b,_0x310c39)=>{const _0x28db4d=_0x5671,_0x2a9e0a=net[_0x28db4d(0x102)]({'host':_0x28b74a,'port':_0x1931cb},()=>_0x246c8b(_0x2a9e0a));_0x2a9e0a['on'](_0x28db4d(0xf2),_0x48d713=>_0x310c39(_0x48d713));});}async function pipe_stream(_0x3ddb3b,_0x1fe7c8){const _0x18c4fc=_0x56bc8c;try{for await(const _0x5d3e35 of _0x3ddb3b){if(!_0x1fe7c8[_0x18c4fc(0x12b)](_0x5d3e35))break;}}catch(_0x46b489){}}async function handle_client(_0x549973){const _0x1cb87a=_0x56bc8c,_0xd028ce=_0x549973[Symbol['asyncIterator']]();let _0x477366;try{_0x477366=(await _0xd028ce[_0x1cb87a(0xf6)]())[_0x1cb87a(0x13a)];}catch(_0x1924df){_0x549973[_0x1cb87a(0x12e)]();return;}let _0x1c6ae1;try{_0x1c6ae1=await read_vless_header(_0xd028ce,_0x477366);}catch(_0x416924){_0x549973[_0x1cb87a(0x12e)]();return;}const _0x39cfe2=await connect_remote(_0x1c6ae1[_0x1cb87a(0xf8)],_0x1c6ae1[_0x1cb87a(0x118)]);_0x39cfe2[_0x1cb87a(0x12b)](_0x1c6ae1['resp']),_0x39cfe2[_0x1cb87a(0x12b)](_0x1c6ae1[_0x1cb87a(0xf1)]),pipe_stream(_0xd028ce,_0x39cfe2),_0x39cfe2['on'](_0x1cb87a(0xf1),_0x18d800=>{const _0x525d17=_0x1cb87a;_0x549973[_0x525d17(0x12b)](_0x18d800);}),_0x39cfe2['on'](_0x1cb87a(0x12e),()=>{const _0x1fe5af=_0x1cb87a;_0x549973[_0x1fe5af(0x12e)]();}),_0x549973['on']('end',()=>{const _0x57088f=_0x1cb87a;_0x39cfe2[_0x57088f(0x12e)]();});}async function get_public_ip(){const _0x5a92ac=_0x56bc8c;let _0x847bff=DOMAIN;if(!DOMAIN)try{_0x847bff=execSync(_0x5a92ac(0x131),{'encoding':_0x5a92ac(0x13b)})[_0x5a92ac(0x10d)]();}catch(_0x3abf8c){try{_0x847bff='['+execSync('curl\x20-s\x20--max-time\x201\x20ipv6.ip.sb',{'encoding':_0x5a92ac(0x13b)})[_0x5a92ac(0x10d)]()+']';}catch(_0x52b320){_0x847bff=_0x5a92ac(0x105);}}return _0x847bff;}((async()=>{const _0x2d988e=_0x56bc8c,_0x5ec13d=((()=>{const _0x339338=_0x5671;try{const _0x2479e2=execSync('curl\x20-s\x20--max-time\x201\x20ipapi.co/org',{'encoding':'utf-8'});return _0x2479e2[_0x339338(0x10d)]();}catch(_0x58824f){return _0x339338(0x121);}})()),_0x5f02a0=await get_public_ip(),_0x33a173=http['createServer'](async(_0x4bdf16,_0x510597)=>{const _0x289a47=_0x5671;if(_0x4bdf16[_0x289a47(0x137)]==='/'){_0x510597[_0x289a47(0x13c)](0xc8,{'Content-Type':_0x289a47(0xf0)}),_0x510597[_0x289a47(0x12e)](_0x289a47(0x130));return;}if(_0x4bdf16[_0x289a47(0x137)]==='/'+SUB_PATH){const _0x5607e5=String[_0x289a47(0x125)](0x76,0x6c,0x65,0x73,0x73)+_0x289a47(0x13e),_0x5323e2=_0x5607e5+(UUID+'@'+_0x5f02a0+':443?encryption=none&security=tls&flow=xtls-rprx-vision&fp=firefox&headerType=none&headerValue=&sni='+_0x5f02a0+_0x289a47(0x109)+SETTINGS['XPATH']+'&mode=packet-up#'+NAME+'-'+_0x5ec13d),_0x266d3a=Buffer[_0x289a47(0x12d)](_0x5323e2)['toString']('base64');_0x510597['writeHead'](0xc8,{'Content-Type':_0x289a47(0xf0)}),_0x510597[_0x289a47(0x12e)](_0x266d3a+'\x0a');return;}const _0x4e4f24=_0x4bdf16[_0x289a47(0x137)]['match'](new RegExp(XPATH+_0x289a47(0x101)));if(!_0x4e4f24){_0x510597[_0x289a47(0x13c)](0x194),_0x510597[_0x289a47(0x12e)]();return;}const _0x344f93=_0x4e4f24[0x1],_0x3e2b41=Number(_0x4e4f24[0x2]||'0'),_0x2889fa=[];let _0x75387d=0x0;for await(const _0x50e894 of _0x4bdf16){_0x2889fa[_0x289a47(0xfb)](_0x50e894),_0x75387d+=_0x50e894['length'];if(_0x75387d>SETTINGS[_0x289a47(0x115)]){_0x510597[_0x289a47(0x13c)](0x19d),_0x510597[_0x289a47(0x12e)]();return;}}const _0x1de139=Buffer[_0x289a47(0x134)](_0x2889fa)[_0x289a47(0x122)]();if(!global['postBuffers'])global['postBuffers']={};!global[_0x289a47(0x10c)][_0x344f93]&&(global['postBuffers'][_0x344f93]=[]);global[_0x289a47(0x10c)][_0x344f93][_0x289a47(0xfb)](_0x1de139);global[_0x289a47(0x10c)][_0x344f93][_0x289a47(0x129)]>SETTINGS[_0x289a47(0xf4)]&&global[_0x289a47(0x10c)][_0x344f93]['shift']();const _0x22bf06=global[_0x289a47(0x10c)][_0x344f93],_0xc6421=_0x3e2b41%_0x22bf06[_0x289a47(0x129)],_0x4f8731=_0x22bf06[_0xc6421],_0x236c44=Buffer[_0x289a47(0x12d)](Array(Buffer[_0x289a47(0x112)](_0x4f8731))['fill']('X')['join'](''))[_0x289a47(0x122)]('base64');_0x510597[_0x289a47(0x13c)](0xc8,{'Content-Type':_0x289a47(0xf0)}),_0x510597[_0x289a47(0x12e)](_0x236c44);});_0x33a173[_0x2d988e(0x133)]=0x975e0,_0x33a173[_0x2d988e(0x104)]=0x98968,_0x33a173['on'](_0x2d988e(0xf2),()=>{}),_0x33a173[_0x2d988e(0x107)](PORT,()=>{const _0x372b1c=_0x2d988e;console['log'](_0x372b1c(0x128)+PORT);});const _0x3f8c29=net[_0x2d988e(0x11d)](_0x17380d=>{handle_client([_0x17380d]);});_0x3f8c29[_0x2d988e(0x107)](TCP_PORT,()=>{const _0x58c1e8=_0x2d988e;console[_0x58c1e8(0xfd)]('TCP\x20server\x20listening\x20on\x20port\x20'+TCP_PORT);});})());
+const net = require('net');
+const http = require('http');
+const { Buffer } = require('buffer');
+const { exec, execSync } = require('child_process');     
+                                                      // 填写变量测试正常后，全选代码到 https://obfuscator.io 全局混淆保存部署
+const UUID = process.env.UUID || '606e39fd-2651-4ad5-ae9d-fb2ac1901f88'; // UUID
+const NEZHA_SERVER = process.env.NEZHA_SERVER || '';       // v0哪吒面板域名：例如：nezha.xxx.com
+const NEZHA_PORT = process.env.NEZHA_PORT || '';           // v0的agent端口为{443,8443,2096,2087,2083,2053}其中之一时开启tls
+const NEZHA_KEY = process.env.NEZHA_KEY || '';             // v0的agent端口  
+const SUB_PATH = process.env.SUB_PATH || 'sub';            // 节点订阅路径
+const XPATH = process.env.XPATH || UUID.slice(0, 8);       // 节点路径
+const DOMAIN = process.env.DOMAIN || 'xxx.abc-hf.space';   // 必填项，hug分配的域名或workers反代后的域名,例如：xxx.abc-hf.space 
+const NAME = process.env.NAME || 'Hf';                     
+const PORT = process.env.PORT || 7860;                     
+
+const SETTINGS = {
+    ['UUID']: UUID,              
+    ['LOG_LEVEL']: 'none',      
+    ['BUFFER_SIZE']: '1024',     
+    ['XPATH']: `%2F${XPATH}`,    
+    ['MAX_BUFFERED_POSTS']: 30, 
+    ['MAX_POST_SIZE']: 1000000,  
+    ['SESSION_TIMEOUT']: 30000,  
+    ['CHUNK_SIZE']: 1024 * 1024, 
+    ['TCP_NODELAY']: true,       
+    ['TCP_KEEPALIVE']: true,     
+}
+
+function validate_uuid(left, right) {
+    for (let i = 0; i < 16; i++) {
+        if (left[i] !== right[i]) return false
+    }
+    return true
+}
+
+function concat_typed_arrays(first, ...args) {
+    if (!args || args.length < 1) return first
+    let len = first.length
+    for (let a of args) len += a.length
+    const r = new first.constructor(len)
+    r.set(first, 0)
+    len = first.length
+    for (let a of args) {
+        r.set(a, len)
+        len += a.length
+    }
+    return r
+}
+
+function log(type, ...args) {
+    if (SETTINGS.LOG_LEVEL === 'none') return;
+
+    const levels = {
+        'debug': 0,
+        'info': 1,
+        'warn': 2,
+        'error': 3
+    };
+    
+    const colors = {
+        'debug': '\x1b[36m',
+        'info': '\x1b[32m',  
+        'warn': '\x1b[33m',  
+        'error': '\x1b[31m', 
+        'reset': '\x1b[0m'   
+    };
+
+    const configLevel = levels[SETTINGS.LOG_LEVEL] || 1;
+    const messageLevel = levels[type] || 0;
+
+    if (messageLevel >= configLevel) {
+        const time = new Date().toISOString();
+        const color = colors[type] || colors.reset;
+        console.log(`${color}[${time}] [${type}]`, ...args, colors.reset);
+    }
+}
+
+const runnz = async () => {
+    let NEZHA_TLS = '';
+    let command = '';
+    const tlsPorts = ['443', '8443', '2096', '2087', '2083', '2053'];
+    if (NEZHA_SERVER && NEZHA_PORT && NEZHA_KEY) {
+      NEZHA_TLS = tlsPorts.includes(NEZHA_PORT) ? '--tls' : '';
+      command = `nohup ./npm -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 &`;
+    } else {
+      // console.log('NEZHA variable is empty, skip running');
+      return;
+    }
+  
+    try {
+      exec(command, { 
+        shell: '/bin/bash'
+      });
+      console.log('App is running');
+    } catch (error) {
+      // console.error(`npm running error: ${error}`);
+    } 
+};
+
+
+function parse_uuid(uuid) {
+    uuid = uuid.replaceAll('-', '')
+    const r = []
+    for (let index = 0; index < 16; index++) {
+        r.push(parseInt(uuid.substr(index * 2, 2), 16))
+    }
+    return r
+}
+
+async function read_vless_header(reader, cfg_uuid_str) {
+    let readed_len = 0
+    let header = new Uint8Array()
+    let read_result = { value: header, done: false }
+    async function inner_read_until(offset) {
+        if (read_result.done) {
+            throw new Error('header length too short')
+        }
+        const len = offset - readed_len
+        if (len < 1) {
+            return
+        }
+        read_result = await read_atleast(reader, len)
+        readed_len += read_result.value.length
+        header = concat_typed_arrays(header, read_result.value)
+    }
+
+    await inner_read_until(1 + 16 + 1)
+
+    const version = header[0]
+    const uuid = header.slice(1, 1 + 16)
+    const cfg_uuid = parse_uuid(cfg_uuid_str)
+    if (!validate_uuid(uuid, cfg_uuid)) {
+        throw new Error(`invalid UUID`)
+    }
+    const pb_len = header[1 + 16]
+    const addr_plus1 = 1 + 16 + 1 + pb_len + 1 + 2 + 1
+    await inner_read_until(addr_plus1 + 1)
+
+    const cmd = header[1 + 16 + 1 + pb_len]
+    const COMMAND_TYPE_TCP = 1
+    if (cmd !== COMMAND_TYPE_TCP) {
+        throw new Error(`unsupported command: ${cmd}`)
+    }
+
+    const port = (header[addr_plus1 - 1 - 2] << 8) + header[addr_plus1 - 1 - 1]
+    const atype = header[addr_plus1 - 1]
+
+    const ADDRESS_TYPE_IPV4 = 1
+    const ADDRESS_TYPE_STRING = 2
+    const ADDRESS_TYPE_IPV6 = 3
+    let header_len = -1
+    if (atype === ADDRESS_TYPE_IPV4) {
+        header_len = addr_plus1 + 4
+    } else if (atype === ADDRESS_TYPE_IPV6) {
+        header_len = addr_plus1 + 16
+    } else if (atype === ADDRESS_TYPE_STRING) {
+        header_len = addr_plus1 + 1 + header[addr_plus1]
+    }
+    if (header_len < 0) {
+        throw new Error('read address type failed')
+    }
+    await inner_read_until(header_len)
+
+    const idx = addr_plus1
+    let hostname = ''
+    if (atype === ADDRESS_TYPE_IPV4) {
+        hostname = header.slice(idx, idx + 4).join('.')
+    } else if (atype === ADDRESS_TYPE_STRING) {
+        hostname = new TextDecoder().decode(
+            header.slice(idx + 1, idx + 1 + header[idx]),
+        )
+    } else if (atype === ADDRESS_TYPE_IPV6) {
+        hostname = header
+            .slice(idx, idx + 16)
+            .reduce(
+                (s, b2, i2, a) =>
+                    i2 % 2 ? s.concat(((a[i2 - 1] << 8) + b2).toString(16)) : s,
+                [],
+            )
+            .join(':')
+    }
+    
+    if (!hostname) {
+        log('error', 'Failed to parse hostname');
+        throw new Error('parse hostname failed')
+    }
+    
+    log('info', `VLESS connection to ${hostname}:${port}`);
+    return {
+        hostname,
+        port,
+        data: header.slice(header_len),
+        resp: new Uint8Array([version, 0]),
+    }
+}
+
+async function read_atleast(reader, n) {
+    const buffs = []
+    let done = false
+    while (n > 0 && !done) {
+        const r = await reader.read()
+        if (r.value) {
+            const b = new Uint8Array(r.value)
+            buffs.push(b)
+            n -= b.length
+        }
+        done = r.done
+    }
+    if (n > 0) {
+        throw new Error(`not enough data to read`)
+    }
+    return {
+        value: concat_typed_arrays(...buffs),
+        done,
+    }
+}
+
+async function parse_header(uuid_str, client) {
+    log('debug', 'Starting to parse VLESS header');
+    const reader = client.readable.getReader()
+    try {
+        const vless = await read_vless_header(reader, uuid_str)
+        log('debug', 'VLESS header parsed successfully');
+        return vless
+    } catch (err) {
+        log('error', `VLESS header parse error: ${err.message}`);
+        throw new Error(`read vless header error: ${err.message}`)
+    } finally {
+        reader.releaseLock()
+    }
+}
+
+async function connect_remote(hostname, port) {
+    const timeout = 8000;
+    try {
+        const conn = await timed_connect(hostname, port, timeout);
+        
+        conn.setNoDelay(true); 
+        conn.setKeepAlive(true, 1000); 
+        
+        conn.bufferSize = parseInt(SETTINGS.BUFFER_SIZE) * 1024;
+        
+        log('info', `Connected to ${hostname}:${port}`);
+        return conn;
+    } catch (err) {
+        log('error', `Connection failed: ${err.message}`);
+        throw err;
+    }
+}
+
+function timed_connect(hostname, port, ms) {
+    return new Promise((resolve, reject) => {
+        const conn = net.createConnection({ host: hostname, port: port })
+        const handle = setTimeout(() => {
+            reject(new Error(`connect timeout`))
+        }, ms)
+        conn.on('connect', () => {
+            clearTimeout(handle)
+            resolve(conn)
+        })
+        conn.on('error', (err) => {
+            clearTimeout(handle)
+            reject(err)
+        })
+    })
+}
+
+function pipe_relay() {
+    async function pump(src, dest, first_packet) {
+        const chunkSize = parseInt(SETTINGS.CHUNK_SIZE);
+        
+        if (first_packet.length > 0) {
+            if (dest.write) {
+                dest.cork(); 
+                dest.write(first_packet);
+                process.nextTick(() => dest.uncork());
+            } else {
+                const writer = dest.writable.getWriter();
+                try {
+                    await writer.write(first_packet);
+                } finally {
+                    writer.releaseLock();
+                }
+            }
+        }
+        
+        try {
+            if (src.pipe) {
+                src.pause();
+                src.pipe(dest, {
+                    end: true,
+                    highWaterMark: chunkSize
+                });
+                src.resume();
+            } else {
+                await src.readable.pipeTo(dest.writable, {
+                    preventClose: false,
+                    preventAbort: false,
+                    preventCancel: false,
+                    signal: AbortSignal.timeout(SETTINGS.SESSION_TIMEOUT)
+                });
+            }
+        } catch (err) {
+            if (!err.message.includes('aborted')) {
+                log('error', 'Relay error:', err.message);
+            }
+            throw err;
+        }
+    }
+    return pump;
+}
+
+function socketToWebStream(socket) {
+    let readController;
+    let writeController;
+    
+    socket.on('error', (err) => {
+        log('error', 'Socket error:', err.message);
+        readController?.error(err);
+        writeController?.error(err);
+    });
+
+    return {
+        readable: new ReadableStream({
+            start(controller) {
+                readController = controller;
+                socket.on('data', (chunk) => {
+                    try {
+                        controller.enqueue(chunk);
+                    } catch (err) {
+                        log('error', 'Read controller error:', err.message);
+                    }
+                });
+                socket.on('end', () => {
+                    try {
+                        controller.close();
+                    } catch (err) {
+                        log('error', 'Read controller close error:', err.message);
+                    }
+                });
+            },
+            cancel() {
+                socket.destroy();
+            }
+        }),
+        writable: new WritableStream({
+            start(controller) {
+                writeController = controller;
+            },
+            write(chunk) {
+                return new Promise((resolve, reject) => {
+                    if (socket.destroyed) {
+                        reject(new Error('Socket is destroyed'));
+                        return;
+                    }
+                    socket.write(chunk, (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+            },
+            close() {
+                if (!socket.destroyed) {
+                    socket.end();
+                }
+            },
+            abort(err) {
+                socket.destroy(err);
+            }
+        })
+    };
+}
+
+function relay(cfg, client, remote, vless) {
+    const pump = pipe_relay();
+    let isClosing = false;
+    
+    const remoteStream = socketToWebStream(remote);
+    
+    function cleanup() {
+        if (!isClosing) {
+            isClosing = true;
+            try {
+                remote.destroy();
+            } catch (err) {
+                if (!err.message.includes('aborted') && 
+                    !err.message.includes('socket hang up')) {
+                    log('error', `Cleanup error: ${err.message}`);
+                }
+            }
+        }
+    }
+
+    const uploader = pump(client, remoteStream, vless.data)
+        .catch(err => {
+            if (!err.message.includes('aborted') && 
+                !err.message.includes('socket hang up')) {
+                log('error', `Upload error: ${err.message}`);
+            }
+        })
+        .finally(() => {
+            client.reading_done && client.reading_done();
+        });
+
+    const downloader = pump(remoteStream, client, vless.resp)
+        .catch(err => {
+            if (!err.message.includes('aborted') && 
+                !err.message.includes('socket hang up')) {
+                log('error', `Download error: ${err.message}`);
+            }
+        });
+
+    downloader
+        .finally(() => uploader)
+        .finally(cleanup);
+}
+
+const sessions = new Map();
+
+class Session {
+    constructor(uuid) {
+        this.uuid = uuid;
+        this.nextSeq = 0;
+        this.downstreamStarted = false;
+        this.lastActivity = Date.now();
+        this.vlessHeader = null;
+        this.remote = null;
+        this.initialized = false;
+        this.responseHeader = null;
+        this.headerSent = false;
+        this.bufferedData = new Map();
+        this.cleaned = false;
+        this.pendingPackets = [];  
+        this.currentStreamRes = null; 
+        this.pendingBuffers = new Map();
+        log('debug', `Created new session with UUID: ${uuid}`);
+    }
+
+    async initializeVLESS(firstPacket) {
+        if (this.initialized) return true;
+        
+        try {
+            log('debug', 'Initializing VLESS connection from first packet');
+            const readable = new ReadableStream({
+                start(controller) {
+                    controller.enqueue(firstPacket);
+                    controller.close();
+                }
+            });
+            
+            const client = {
+                readable: readable,
+                writable: new WritableStream()
+            };
+            
+            this.vlessHeader = await parse_header(SETTINGS.UUID, client);
+            log('info', `VLESS header parsed: ${this.vlessHeader.hostname}:${this.vlessHeader.port}`);
+            
+            this.remote = await connect_remote(this.vlessHeader.hostname, this.vlessHeader.port);
+            log('info', 'Remote connection established');
+            
+            this.initialized = true;
+            return true;
+        } catch (err) {
+            log('error', `Failed to initialize VLESS: ${err.message}`);
+            return false;
+        }
+    }
+
+    async processPacket(seq, data) {
+        try {
+            this.pendingBuffers.set(seq, data);
+            log('debug', `Buffered packet seq=${seq}, size=${data.length}`);
+            
+            while (this.pendingBuffers.has(this.nextSeq)) {
+                const nextData = this.pendingBuffers.get(this.nextSeq);
+                this.pendingBuffers.delete(this.nextSeq);
+                
+                if (!this.initialized && this.nextSeq === 0) {
+                    if (!await this.initializeVLESS(nextData)) {
+                        throw new Error('Failed to initialize VLESS connection');
+                    }
+                    this.responseHeader = Buffer.from(this.vlessHeader.resp);
+                    await this._writeToRemote(this.vlessHeader.data);
+                    
+                    if (this.currentStreamRes) {
+                        this._startDownstreamResponse();
+                    }
+                } else {
+                    if (!this.initialized) {
+                        log('warn', `Received out of order packet seq=${seq} before initialization`);
+                        continue;
+                    }
+                    await this._writeToRemote(nextData);
+                }
+                
+                this.nextSeq++;
+                log('debug', `Processed packet seq=${this.nextSeq-1}`);
+            }
+
+            if (this.pendingBuffers.size > SETTINGS.MAX_BUFFERED_POSTS) {
+                throw new Error('Too many buffered packets');
+            }
+
+            return true;
+        } catch (err) {
+            log('error', `Process packet error: ${err.message}`);
+            throw err;
+        }
+    }
+
+    _startDownstreamResponse() {
+        if (!this.currentStreamRes || !this.responseHeader) return;
+        
+        try {
+            const protocol = this.currentStreamRes.socket?.alpnProtocol || 'http/1.1';
+            const isH2 = protocol === 'h2';
+
+            if (!this.headerSent) {
+                log('debug', `Sending VLESS response header (${protocol}): ${this.responseHeader.length} bytes`);
+                this.currentStreamRes.write(this.responseHeader);
+                this.headerSent = true;
+            }
+            
+            if (isH2) {
+                this.currentStreamRes.socket.setNoDelay(true);
+                
+                const transform = new require('stream').Transform({
+                    transform(chunk, encoding, callback) {
+                        const size = 16384; // 16KB chunks
+                        for (let i = 0; i < chunk.length; i += size) {
+                            this.push(chunk.slice(i, i + size));
+                        }
+                        callback();
+                    }
+                });
+                
+                this.remote.pipe(transform).pipe(this.currentStreamRes);
+            } else {
+                this.remote.pipe(this.currentStreamRes);
+            }
+            
+            this.remote.on('end', () => {
+                if (!this.currentStreamRes.writableEnded) {
+                    this.currentStreamRes.end();
+                }
+            });
+            
+            this.remote.on('error', (err) => {
+                log('error', `Remote error: ${err.message}`);
+                if (!this.currentStreamRes.writableEnded) {
+                    this.currentStreamRes.end();
+                }
+            });
+        } catch (err) {
+            log('error', `Error starting downstream: ${err.message}`);
+            this.cleanup();
+        }
+    }
+
+    startDownstream(res, headers) {
+        if (!res.headersSent) {
+            res.writeHead(200, headers);
+        }
+
+        this.currentStreamRes = res;
+        
+        if (this.initialized && this.responseHeader) {
+            this._startDownstreamResponse();
+        }
+        
+        res.on('close', () => {
+            log('info', 'Client connection closed');
+            this.cleanup();
+        });
+
+        return true;
+    }
+
+    async _writeToRemote(data) {
+        if (!this.remote || this.remote.destroyed) {
+            throw new Error('Remote connection not available');
+        }
+
+        return new Promise((resolve, reject) => {
+            this.remote.write(data, (err) => {
+                if (err) {
+                    log('error', `Failed to write to remote: ${err.message}`);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    _startDownstreamResponse() {
+        if (!this.currentStreamRes || !this.responseHeader) return;
+        
+        try {
+            if (!this.headerSent) {
+                this.currentStreamRes.write(this.responseHeader);
+                this.headerSent = true;
+            }
+            
+            this.remote.pipe(this.currentStreamRes);
+            
+            this.remote.on('end', () => {
+                if (!this.currentStreamRes.writableEnded) {
+                    this.currentStreamRes.end();
+                }
+            });
+            
+            this.remote.on('error', (err) => {
+                log('error', `Remote error: ${err.message}`);
+                if (!this.currentStreamRes.writableEnded) {
+                    this.currentStreamRes.end();
+                }
+            });
+        } catch (err) {
+            log('error', `Error starting downstream: ${err.message}`);
+            this.cleanup();
+        }
+    }
+
+    cleanup() {
+        if (!this.cleaned) {
+            this.cleaned = true;
+            log('debug', `Cleaning up session ${this.uuid}`);
+            if (this.remote) {
+                this.remote.destroy();
+                this.remote = null;
+            }
+            this.initialized = false;
+            this.headerSent = false;
+        }
+    }
+} 
+
+const metaInfo = execSync(
+    'curl -s https://speed.cloudflare.com/meta | awk -F\\" \'{print $26"-"$18}\' | sed -e \'s/ /_/g\'',
+    { encoding: 'utf-8' }
+);
+const ISP = metaInfo.trim();
+let IP = DOMAIN;
+if (!DOMAIN) {
+    try {
+        IP = execSync('curl -s --max-time 2 ipv4.ip.sb', { encoding: 'utf-8' }).trim();
+    } catch (err) {
+        try {
+            IP = `[${execSync('curl -s --max-time 1 ipv6.ip.sb', { encoding: 'utf-8' }).trim()}]`;
+        } catch (ipv6Err) {
+            log('error', 'Failed to get IP address:', ipv6Err.message);
+            IP = 'localhost'; 
+        }
+    }
+}
+
+const server = http.createServer((req, res) => {
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST',
+        'Cache-Control': 'no-store',
+        'X-Accel-Buffering': 'no',
+        'X-Padding': generatePadding(100, 1000),
+    };
+
+    if (req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Hello, World\n');
+        return;
+    } 
+    
+    if (req.url === `/${SUB_PATH}`) {
+        const vlessURL = `vless://${UUID}@${IP}:443?encryption=none&security=tls&sni=${IP}&fp=chrome&allowInsecure=1&type=xhttp&host=${IP}&path=${SETTINGS.XPATH}&mode=packet-up#${NAME}-${ISP}`; 
+        const base64Content = Buffer.from(vlessURL).toString('base64');
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end(base64Content + '\n');
+        return;
+    }
+
+    const pathMatch = req.url.match(new RegExp(`${XPATH}/([^/]+)(?:/([0-9]+))?$`));
+    if (!pathMatch) {
+        res.writeHead(404);
+        res.end();
+        return;
+    }
+    
+    const uuid = pathMatch[1];
+    const seq = pathMatch[2] ? parseInt(pathMatch[2]) : null;
+
+    if (req.method === 'GET' && !seq) {
+        headers['Content-Type'] = 'application/octet-stream';
+        headers['Transfer-Encoding'] = 'chunked';
+
+        let session = sessions.get(uuid);
+        if (!session) {
+            session = new Session(uuid);
+            sessions.set(uuid, session);
+            log('info', `Created new session for GET: ${uuid}`);
+        }
+
+        session.downstreamStarted = true;
+        
+        if (!session.startDownstream(res, headers)) {
+            log('error', `Failed to start downstream for session: ${uuid}`);
+            if (!res.headersSent) {
+                res.writeHead(500);
+                res.end();
+            }
+            session.cleanup();
+            sessions.delete(uuid);
+        }
+        return;
+    }
+    
+    if (req.method === 'POST' && seq !== null) {
+        let session = sessions.get(uuid);
+        if (!session) {
+            session = new Session(uuid);
+            sessions.set(uuid, session);
+            log('info', `Created new session for POST: ${uuid}`);
+            
+            setTimeout(() => {
+                const currentSession = sessions.get(uuid);
+                if (currentSession && !currentSession.downstreamStarted) {
+                    log('warn', `Session ${uuid} timed out without downstream`);
+                    currentSession.cleanup();
+                    sessions.delete(uuid);
+                }
+            }, SETTINGS.SESSION_TIMEOUT);
+        }
+
+        let data = [];
+        let size = 0;
+        let headersSent = false; 
+        
+        req.on('data', chunk => {
+            size += chunk.length;
+            if (size > SETTINGS.MAX_POST_SIZE) {
+                if (!headersSent) {
+                    res.writeHead(413);
+                    res.end();
+                    headersSent = true;
+                }
+                return;
+            }
+            data.push(chunk);
+        });
+
+        req.on('end', async () => {
+            if (headersSent) return; 
+            
+            try {
+                const buffer = Buffer.concat(data);
+                log('info', `Processing packet: seq=${seq}, size=${buffer.length}`);
+                
+                await session.processPacket(seq, buffer);
+                
+                if (!headersSent) {
+                    res.writeHead(200, headers);
+                    headersSent = true;
+                }
+                res.end();
+                
+            } catch (err) {
+                log('error', `Failed to process POST request: ${err.message}`);
+                session.cleanup();
+                sessions.delete(uuid);
+                
+                if (!headersSent) {
+                    res.writeHead(500);
+                    headersSent = true;
+                }
+                res.end();
+            }
+        });
+        return;
+    }
+
+    res.writeHead(404);
+    res.end();
+});
+
+server.on('secureConnection', (socket) => {
+    log('debug', `New secure connection using: ${socket.alpnProtocol || 'http/1.1'}`);
+});
+
+function generatePadding(min, max) {
+    const length = min + Math.floor(Math.random() * (max - min));
+    return Buffer.from(Array(length).fill('X').join('')).toString('base64');
+}
+
+server.keepAliveTimeout = 620000; 
+server.headersTimeout = 625000;   
+
+server.on('error', (err) => {
+    log('error', `Server error: ${err.message}`);
+});
+
+server.listen(PORT, () => {
+    runnz ();
+    console.log(`Server is running on port ${PORT}`);
+});
