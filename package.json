@@ -1,0 +1,16 @@
+{
+  "name": "nodejs-x",
+  "version": "1.0.0",
+  "description": "node",
+  "author": "eooce",
+  "license": "MIT",
+  "private": false,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  }
+}
