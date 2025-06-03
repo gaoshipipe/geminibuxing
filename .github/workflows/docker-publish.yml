@@ -1,0 +1,23 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # 或者你想要触发构建的其他分支
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # 更新为 v3
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u gaoshipipe --password-stdin
+
+      - name: Build Docker image
+        run: docker build . -t ghcr.io/gaoshipipe/newbeewangx:latest
+
+      - name: Push Docker image
+        run: docker push ghcr.io/gaoshipipe/newbeewangx:latest
