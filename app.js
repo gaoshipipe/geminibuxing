@@ -3,8 +3,7 @@ const http = require('http');
 const { Buffer } = require('buffer');
 const { exec, execSync } = require('child_process');
 
-// Constants
-const CORESERVICE_COMMAND_TCP = 1; // 原 VLESS_COMMAND_TCP
+const CORESERVICE_COMMAND_TCP = 1;
 const ADDRESS_TYPE_IPV4 = 1;
 const ADDRESS_TYPE_DOMAIN = 2;
 const ADDRESS_TYPE_IPV6 = 3;
@@ -34,9 +33,53 @@ const SETTINGS = {
     CHUNK_SIZE: 1024 * 1024,
     TCP_NODELAY: true,
     TCP_KEEPALIVE: true,
+    TCP_KEEPALIVE_INTERVAL: 5000, // 新增：TCP Keep-Alive 探测间隔
+    BUFFER_POOL_SIZE: 10,       // Buffer池大小
+    BUFFER_POOL_CHUNK_SIZE: 16384 // Buffer池中每个Buffer的默认大小，与H2_CHUNK_SIZE一致
 };
 
-const CORESERVICE_PATH_REGEX = new RegExp(`^${SETTINGS.XPATH}/([^/]+)(?:/([0-9]+))?$`); // 原 VLESS_PATH_REGEX
+const CORESERVICE_PATH_REGEX = new RegExp(`^${SETTINGS.XPATH}/([^/]+)(?:/([0-9]+))?$`);
+
+// 简单的Buffer池实现
+class BufferPool {
+    constructor(poolSize, chunkSize) {
+        this.pool = [];
+        this.poolSize = poolSize;
+        this.chunkSize = chunkSize;
+        for (let i = 0; i < poolSize; i++) {
+            this.pool.push(Buffer.allocUnsafe(chunkSize));
+        }
+        log('debug', `BufferPool initialized with ${poolSize} buffers of size ${chunkSize}`);
+    }
+
+    acquire(minSize = this.chunkSize) {
+        // 尝试从池中获取足够大的Buffer
+        for (let i = 0; i < this.pool.length; i++) {
+            if (this.pool[i].length >= minSize) {
+                const buffer = this.pool.splice(i, 1)[0];
+                log('debug', `Buffer acquired from pool, remaining: ${this.pool.length}`);
+                return buffer;
+            }
+        }
+        // 如果池中没有合适的，则创建新的
+        const newBuffer = Buffer.allocUnsafe(Math.max(this.chunkSize, minSize));
+        log('debug', `Buffer created (pool empty or too small), size: ${newBuffer.length}`);
+        return newBuffer;
+    }
+
+    release(buffer) {
+        if (buffer && this.pool.length < this.poolSize) {
+            this.pool.push(buffer);
+            log('debug', `Buffer released to pool, remaining: ${this.pool.length}`);
+        } else {
+            // 如果池已满或buffer无效，则允许GC回收
+            log('debug', 'Buffer not released to pool (pool full or invalid buffer)');
+        }
+    }
+}
+
+const bufferPool = new BufferPool(SETTINGS.BUFFER_POOL_SIZE, SETTINGS.BUFFER_POOL_CHUNK_SIZE);
+
 
 function validate_uuid(left, right) {
     if (left.length !== 16 || right.length !== 16) return false;
@@ -51,7 +94,8 @@ function concat_typed_arrays(first, ...args) {
     let totalLength = first.length;
     for (const arr of args) totalLength += arr.length;
     
-    const result = new first.constructor(totalLength);
+    // 使用Buffer而不是Uint8Array来确保类型一致性，Buffer继承自Uint8Array
+    const result = Buffer.allocUnsafe(totalLength);
     result.set(first, 0);
     let offset = first.length;
     for (const arr of args) {
@@ -87,7 +131,7 @@ function parse_uuid(uuidStr) {
     for (let i = 0; i < 16; i++) {
         result.push(parseInt(cleanedUuid.substring(i * 2, i * 2 + 2), 16));
     }
-    return new Uint8Array(result);
+    return Buffer.from(result); // 返回Buffer
 }
 
 async function read_atleast(reader, n) {
@@ -98,7 +142,8 @@ async function read_atleast(reader, n) {
         const { value, done: streamDone } = await reader.read();
         done = streamDone;
         if (value) {
-            const bufferChunk = new Uint8Array(value);
+            // 确保value是Buffer，如果不是，进行转换
+            const bufferChunk = (value instanceof Buffer) ? value : Buffer.from(value);
             buffs.push(bufferChunk);
             bytesRead += bufferChunk.length;
         } else if (done && bytesRead < n) {
@@ -109,20 +154,20 @@ async function read_atleast(reader, n) {
         throw new Error(`Not enough data to read, expected ${n} bytes, got ${bytesRead}`);
     }
     return {
-        value: concat_typed_arrays(...buffs),
+        value: concat_typed_arrays(...buffs), // 确保返回Buffer
         done,
     };
 }
 
-async function read_coreservice_protocol_header(reader, cfg_uuid_str) { // Renamed from read_vless_header
-    let accumulatedHeader = new Uint8Array();
+async function read_coreservice_protocol_header(reader, cfg_uuid_str) {
+    let accumulatedHeader = Buffer.alloc(0); // 初始为空Buffer
     let totalReadLength = 0;
 
     async function ensure_bytes(count) {
         if (totalReadLength >= count) return;
         const needed = count - totalReadLength;
         const { value, done } = await read_atleast(reader, needed);
-        if (done && value.length < needed) throw new Error('CoreService protocol header too short while reading.'); // Text changed
+        if (done && value.length < needed) throw new Error('CoreService protocol header too short while reading.');
         accumulatedHeader = concat_typed_arrays(accumulatedHeader, value);
         totalReadLength += value.length;
     }
@@ -141,7 +186,7 @@ async function read_coreservice_protocol_header(reader, cfg_uuid_str) { // Renam
     await ensure_bytes(1 + 16 + 1 + addonsLength + 1 + 2 + 1); 
 
     const command = accumulatedHeader[1 + 16 + 1 + addonsLength];
-    if (command !== CORESERVICE_COMMAND_TCP) { // Constant changed
+    if (command !== CORESERVICE_COMMAND_TCP) {
         throw new Error(`Unsupported command: ${command}`);
     }
 
@@ -183,26 +228,26 @@ async function read_coreservice_protocol_header(reader, cfg_uuid_str) { // Renam
         throw new Error('Parse hostname failed');
     }
     
-    log('info', `CoreService connection to ${hostname}:${port}`); // Text changed
+    log('info', `CoreService connection to ${hostname}:${port}`);
     const headerTotalLength = addressStartIndex + addressLength;
     return {
         hostname,
         port,
-        data: accumulatedHeader.slice(headerTotalLength),
-        responseBytes: new Uint8Array([version, 0]), 
+        data: accumulatedHeader.slice(headerTotalLength), // 返回Buffer
+        responseBytes: Buffer.from([version, 0]), // 返回Buffer
     };
 }
 
 
-async function parse_coreservice_client_header(clientStreamReader, configuredUuid) { // Renamed from parse_vless_client_header
-    log('debug', 'Starting to parse CoreService header from client stream'); // Text changed
+async function parse_coreservice_client_header(clientStreamReader, configuredUuid) {
+    log('debug', 'Starting to parse CoreService header from client stream');
     try {
-        const coreServiceDetails = await read_coreservice_protocol_header(clientStreamReader, configuredUuid); // Function name and var name changed
-        log('debug', 'CoreService header parsed successfully'); // Text changed
-        return coreServiceDetails; // Var name changed
+        const coreServiceDetails = await read_coreservice_protocol_header(clientStreamReader, configuredUuid);
+        log('debug', 'CoreService header parsed successfully');
+        return coreServiceDetails;
     } catch (err) {
-        log('error', `CoreService header parse error: ${err.message}`); // Text changed
-        throw new Error(`Read CoreService header error: ${err.message}`); // Text changed
+        log('error', `CoreService header parse error: ${err.message}`);
+        throw new Error(`Read CoreService header error: ${err.message}`);
     }
 }
 
@@ -229,7 +274,7 @@ async function connect_to_remote_host(hostname, port) {
     try {
         const remoteSocket = await timed_connect(hostname, port, connectionTimeout);
         remoteSocket.setNoDelay(SETTINGS.TCP_NODELAY);
-        remoteSocket.setKeepAlive(SETTINGS.TCP_KEEPALIVE, 1000); 
+        remoteSocket.setKeepAlive(SETTINGS.TCP_KEEPALIVE, SETTINGS.TCP_KEEPALIVE_INTERVAL); // 使用配置的间隔
         remoteSocket.bufferSize = parseInt(SETTINGS.BUFFER_SIZE, 10) * 1024;
         log('info', `Connected to remote ${hostname}:${port}`);
         return remoteSocket;
@@ -318,7 +363,8 @@ function convert_socket_to_web_streams(socket) {
                     if (socket.destroyed) {
                         return reject(new Error('Socket is destroyed, cannot write'));
                     }
-                    socket.write(chunk, (err) => {
+                    // 确保写入的数据是Buffer
+                    socket.write((chunk instanceof Buffer) ? chunk : Buffer.from(chunk), (err) => {
                         if (err) reject(err); else resolve();
                     });
                 });
@@ -329,7 +375,6 @@ function convert_socket_to_web_streams(socket) {
     };
 }
 
-// Parameter coreServiceDetails was vlessDetails
 function setup_relay(clientWebStream, remoteSocket, coreServiceDetails) {
     const pump = create_pipe_pump();
     let isClosing = false;
@@ -350,7 +395,7 @@ function setup_relay(clientWebStream, remoteSocket, coreServiceDetails) {
         }
     }
 
-    const uploaderPromise = pump(clientWebStream, remoteWebStream, coreServiceDetails.data) // Var name changed
+    const uploaderPromise = pump(clientWebStream, remoteWebStream, coreServiceDetails.data)
         .catch(err => {
             if (isSignificantRelayError(err)) log('error', `Uplink error: ${err.message}`);
         })
@@ -360,7 +405,7 @@ function setup_relay(clientWebStream, remoteSocket, coreServiceDetails) {
             }
         });
 
-    const downloaderPromise = pump(remoteWebStream, clientWebStream, coreServiceDetails.responseBytes) // Var name changed
+    const downloaderPromise = pump(remoteWebStream, clientWebStream, coreServiceDetails.responseBytes)
         .catch(err => {
             if (isSignificantRelayError(err)) log('error', `Downlink error: ${err.message}`);
         });
@@ -378,23 +423,22 @@ class Session {
         this.nextExpectedSeq = 0;
         this.isDownstreamStarted = false;
         this.lastActivityTime = Date.now();
-        this.coreServiceDetails = null; // Renamed from vlessDetails
+        this.coreServiceDetails = null;
         this.remoteSocket = null;
         this.isInitialized = false;
-        this.coreServiceResponseHeader = null; // Renamed from vlessResponseHeader
-        this.isCoreServiceHeaderSentToClient = false; // Renamed from isVlessHeaderSentToClient
+        this.coreServiceResponseHeader = null;
+        this.isCoreServiceHeaderSentToClient = false;
         this.pendingClientDataBuffers = new Map();
         this.isCleanedUp = false;
         this.httpDownstreamResponse = null; 
         log('debug', `Session created: ${id}`);
     }
 
-    // Renamed from initializeVlessConnection
     async initializeCoreServiceConnection(firstClientPacket) {
         if (this.isInitialized) return true;
         
         try {
-            log('debug', `Initializing CoreService for session ${this.id} from first packet`); // Text changed
+            log('debug', `Initializing CoreService for session ${this.id} from first packet`);
             const clientReadableStream = new ReadableStream({
                 start(controller) {
                     controller.enqueue(firstClientPacket);
@@ -405,15 +449,13 @@ class Session {
             const clientWritableStream = new WritableStream(); 
             const tempClientWebStream = { readable: clientReadableStream, writable: clientWritableStream };
 
-            // Func name and var name changed
             this.coreServiceDetails = await parse_coreservice_client_header(tempClientWebStream.readable.getReader(), SETTINGS.UUID);
-            // Var name changed, text changed
             log('info', `CoreService parsed for ${this.id}: ${this.coreServiceDetails.hostname}:${this.coreServiceDetails.port}`);
             
-            this.remoteSocket = await connect_to_remote_host(this.coreServiceDetails.hostname, this.coreServiceDetails.port); // Var name changed
+            this.remoteSocket = await connect_to_remote_host(this.coreServiceDetails.hostname, this.coreServiceDetails.port);
             log('info', `Remote connected for ${this.id}`);
             
-            this.coreServiceResponseHeader = Buffer.from(this.coreServiceDetails.responseBytes); // Var name changed (both)
+            this.coreServiceResponseHeader = this.coreServiceDetails.responseBytes; // 已经是Buffer
             this.isInitialized = true;
 
             if (this.httpDownstreamResponse) {
@@ -421,7 +463,7 @@ class Session {
             }
             return true;
         } catch (err) {
-            log('error', `Session ${this.id} CoreService initialization failed: ${err.message}`); // Text changed
+            log('error', `Session ${this.id} CoreService initialization failed: ${err.message}`);
             this.cleanup(); 
             return false;
         }
@@ -438,14 +480,15 @@ class Session {
             this.pendingClientDataBuffers.delete(this.nextExpectedSeq);
                 
             if (!this.isInitialized && this.nextExpectedSeq === 0) {
-                // Func name changed
                 if (!await this.initializeCoreServiceConnection(nextData)) {
-                    // Text changed
+                    // 如果初始化失败，则抛出错误以终止处理
                     throw new Error('Failed to initialize CoreService connection during packet processing');
                 }
-                 await this._writeToRemoteSocket(this.coreServiceDetails.data); // Var name changed
+                 // 确保这里传递的是Buffer
+                 await this._writeToRemoteSocket(this.coreServiceDetails.data);
 
             } else if (this.isInitialized) {
+                // 确保这里传递的是Buffer
                 await this._writeToRemoteSocket(nextData);
             } else {
                 log('warn', `Session ${this.id}: Received out-of-order packet seq=${this.nextExpectedSeq} before initialization completed.`);
@@ -464,18 +507,17 @@ class Session {
     }
     
     _initiateDownstreamDataFlow() {
-        // Var name changed
         if (!this.httpDownstreamResponse || !this.coreServiceResponseHeader || !this.remoteSocket || !this.isInitialized) {
              log('debug', `Session ${this.id}: Downstream conditions not met. Res: ${!!this.httpDownstreamResponse}, Header: ${!!this.coreServiceResponseHeader}, Remote: ${!!this.remoteSocket}, Initialized: ${this.isInitialized}`);
             return;
         }
         
         try {
-            // Var name changed (both)
             if (!this.isCoreServiceHeaderSentToClient) {
-                log('debug', `Session ${this.id}: Sending CoreService response header to client: ${this.coreServiceResponseHeader.length} bytes`); // Text and var name changed
-                this.httpDownstreamResponse.write(this.coreServiceResponseHeader); // Var name changed
-                this.isCoreServiceHeaderSentToClient = true; // Var name changed
+                log('debug', `Session ${this.id}: Sending CoreService response header to client: ${this.coreServiceResponseHeader.length} bytes`);
+                // 确保 coreServiceResponseHeader 是 Buffer
+                this.httpDownstreamResponse.write(this.coreServiceResponseHeader);
+                this.isCoreServiceHeaderSentToClient = true;
             }
             
             this.remoteSocket.pipe(this.httpDownstreamResponse);
@@ -490,7 +532,6 @@ class Session {
             this.remoteSocket.on('error', (err) => {
                 log('error', `Session ${this.id}: Remote socket error: ${err.message}. Ending client response.`);
                 if (isSignificantRelayError(err)) {
-                    // Log significant errors
                 }
                 if (!this.httpDownstreamResponse.writableEnded) {
                     this.httpDownstreamResponse.end();
@@ -518,11 +559,9 @@ class Session {
 
         this.httpDownstreamResponse = res;
         
-        // Var name changed
         if (this.isInitialized && this.coreServiceResponseHeader && this.remoteSocket) {
             this._initiateDownstreamDataFlow();
         } else {
-            // Text changed
             log('debug', `Session ${this.id}: Waiting for CoreService initialization to start downstream.`);
         }
         
@@ -538,7 +577,8 @@ class Session {
             throw new Error(`Session ${this.id}: Remote socket not available or destroyed.`);
         }
         return new Promise((resolve, reject) => {
-            this.remoteSocket.write(data, (err) => {
+            // 确保写入的数据是Buffer
+            this.remoteSocket.write((data instanceof Buffer) ? data : Buffer.from(data), (err) => {
                 if (err) {
                     log('error', `Session ${this.id}: Failed to write to remote: ${err.message}`);
                     reject(err);
@@ -561,9 +601,15 @@ class Session {
             this.httpDownstreamResponse.end();
             this.httpDownstreamResponse = null;
         }
+        // 清理所有缓冲的数据，并尝试释放到Buffer池（如果合适）
+        this.pendingClientDataBuffers.forEach(buffer => {
+            if (buffer.length === SETTINGS.BUFFER_POOL_CHUNK_SIZE) { // 只释放固定大小的Buffer
+                bufferPool.release(buffer);
+            }
+        });
         this.pendingClientDataBuffers.clear();
         this.isInitialized = false;
-        this.isCoreServiceHeaderSentToClient = false; // Var name changed
+        this.isCoreServiceHeaderSentToClient = false;
         sessions.delete(this.id); 
         log('info', `Session ${this.id} cleaned up and removed.`);
     }
@@ -587,11 +633,16 @@ if (!DOMAIN) {
         }
     }
 }
-log('info', `Using IP: ${IP} for CoreService configuration.`); // Text changed
+log('info', `Using IP: ${IP} for CoreService configuration.`);
 
 function generatePadding(min, max) {
     const length = min + Math.floor(Math.random() * (max - min + 1));
-    return Buffer.alloc(length, 'X').toString('base64'); 
+    // 从Buffer池获取或创建Buffer，然后转换为base64
+    const buffer = bufferPool.acquire(length);
+    buffer.fill('X', 0, Math.min(length, buffer.length)); // 只填充需要的部分
+    const padding = buffer.toString('base64', 0, length);
+    bufferPool.release(buffer); // 释放Buffer回池
+    return padding;
 }
 
 function handleRootRequest(req, res) {
@@ -600,9 +651,8 @@ function handleRootRequest(req, res) {
 }
 
 function handleSubscriptionRequest(req, res) {
-    // IMPORTANT: The "vless://" scheme name here MUST NOT be changed to preserve functionality.
-    const coreServiceURL = `vless://${SETTINGS.UUID}@${IP}:443?encryption=none&security=tls&sni=${IP}&fp=chrome&allowInsecure=1&type=xhttp&host=${IP}&path=${SETTINGS.XPATH}&mode=packet-up#${NAME}-${ISP}`; // Var name changed
-    const base64Content = Buffer.from(coreServiceURL).toString('base64'); // Var name changed
+    const coreServiceURL = `vless://${SETTINGS.UUID}@${IP}:443?encryption=none&security=tls&sni=${IP}&fp=chrome&allowInsecure=1&type=xhttp&host=${IP}&path=${SETTINGS.XPATH}&mode=packet-up#${NAME}-${ISP}`;
+    const base64Content = Buffer.from(coreServiceURL).toString('base64');
     res.writeHead(HTTP_STATUS_OK, { 'Content-Type': 'text/plain' });
     res.end(base64Content + '\n');
 }
@@ -612,7 +662,7 @@ function handleNotFoundResponse(req, res) {
     res.end();
 }
 
-function handleCoreServiceGetRequest(req, res, sessionId, baseHeaders) { // Renamed from handleVlessGetRequest
+function handleCoreServiceGetRequest(req, res, sessionId, baseHeaders) {
     const httpHeaders = {
         ...baseHeaders,
         'Content-Type': 'application/octet-stream',
@@ -638,7 +688,7 @@ function handleCoreServiceGetRequest(req, res, sessionId, baseHeaders) { // Rena
     }
 }
 
-async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, baseHeaders) { // Renamed from handleVlessPostRequest
+async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, baseHeaders) {
     let session = sessions.get(sessionId);
     if (!session) {
         session = new Session(sessionId);
@@ -673,6 +723,7 @@ async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, ba
             req.destroy(new Error('Payload too large')); 
             return;
         }
+        // 直接将接收到的Buffer/Uint8Array存入数组，避免不必要的拷贝
         requestDataChunks.push(chunk);
     });
 
@@ -680,7 +731,7 @@ async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, ba
         if (postHeadersSent || req.destroyed) return; 
         
         try {
-            const completeDataBuffer = Buffer.concat(requestDataChunks);
+            const completeDataBuffer = Buffer.concat(requestDataChunks); // 确保是Buffer
             log('info', `Session ${sessionId}: Processing POST packet seq=${sequenceNum}, size=${completeDataBuffer.length}`);
             
             await session.handleClientDataPacket(sequenceNum, completeDataBuffer);
@@ -732,7 +783,7 @@ const server = http.createServer((req, res) => {
         return handleSubscriptionRequest(req, res);
     }
 
-    const pathMatch = req.url.match(CORESERVICE_PATH_REGEX); // Regex var name changed
+    const pathMatch = req.url.match(CORESERVICE_PATH_REGEX);
     if (!pathMatch) {
         return handleNotFoundResponse(req, res);
     }
@@ -741,12 +792,10 @@ const server = http.createServer((req, res) => {
     const sequenceNum = seqStr ? parseInt(seqStr, 10) : null;
 
     if (req.method === 'GET' && sequenceNum === null) {
-        // Func name changed
         return handleCoreServiceGetRequest(req, res, sessionId, commonHeaders);
     }
     
     if (req.method === 'POST' && sequenceNum !== null) {
-        // Func name changed
         return handleCoreServicePostRequest(req, res, sessionId, sequenceNum, commonHeaders);
     }
 
@@ -782,6 +831,5 @@ setInterval(() => {
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    // Text changed
     log('info', `CoreService proxy server started on port ${PORT}. UUID: ${SETTINGS.UUID}. Path: ${SETTINGS.XPATH}`);
 });
