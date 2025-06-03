@@ -33,14 +33,13 @@ const SETTINGS = {
     CHUNK_SIZE: 1024 * 1024,
     TCP_NODELAY: true,
     TCP_KEEPALIVE: true,
-    TCP_KEEPALIVE_INTERVAL: 5000, // 新增：TCP Keep-Alive 探测间隔
-    BUFFER_POOL_SIZE: 10,       // Buffer池大小
-    BUFFER_POOL_CHUNK_SIZE: 16384 // Buffer池中每个Buffer的默认大小，与H2_CHUNK_SIZE一致
+    TCP_KEEPALIVE_INTERVAL: 5000,
+    BUFFER_POOL_SIZE: 10,
+    BUFFER_POOL_CHUNK_SIZE: 16384
 };
 
 const CORESERVICE_PATH_REGEX = new RegExp(`^${SETTINGS.XPATH}/([^/]+)(?:/([0-9]+))?$`);
 
-// 简单的Buffer池实现
 class BufferPool {
     constructor(poolSize, chunkSize) {
         this.pool = [];
@@ -53,7 +52,6 @@ class BufferPool {
     }
 
     acquire(minSize = this.chunkSize) {
-        // 尝试从池中获取足够大的Buffer
         for (let i = 0; i < this.pool.length; i++) {
             if (this.pool[i].length >= minSize) {
                 const buffer = this.pool.splice(i, 1)[0];
@@ -61,7 +59,6 @@ class BufferPool {
                 return buffer;
             }
         }
-        // 如果池中没有合适的，则创建新的
         const newBuffer = Buffer.allocUnsafe(Math.max(this.chunkSize, minSize));
         log('debug', `Buffer created (pool empty or too small), size: ${newBuffer.length}`);
         return newBuffer;
@@ -72,7 +69,6 @@ class BufferPool {
             this.pool.push(buffer);
             log('debug', `Buffer released to pool, remaining: ${this.pool.length}`);
         } else {
-            // 如果池已满或buffer无效，则允许GC回收
             log('debug', 'Buffer not released to pool (pool full or invalid buffer)');
         }
     }
@@ -94,7 +90,6 @@ function concat_typed_arrays(first, ...args) {
     let totalLength = first.length;
     for (const arr of args) totalLength += arr.length;
     
-    // 使用Buffer而不是Uint8Array来确保类型一致性，Buffer继承自Uint8Array
     const result = Buffer.allocUnsafe(totalLength);
     result.set(first, 0);
     let offset = first.length;
@@ -131,7 +126,7 @@ function parse_uuid(uuidStr) {
     for (let i = 0; i < 16; i++) {
         result.push(parseInt(cleanedUuid.substring(i * 2, i * 2 + 2), 16));
     }
-    return Buffer.from(result); // 返回Buffer
+    return Buffer.from(result);
 }
 
 async function read_atleast(reader, n) {
@@ -142,7 +137,6 @@ async function read_atleast(reader, n) {
         const { value, done: streamDone } = await reader.read();
         done = streamDone;
         if (value) {
-            // 确保value是Buffer，如果不是，进行转换
             const bufferChunk = (value instanceof Buffer) ? value : Buffer.from(value);
             buffs.push(bufferChunk);
             bytesRead += bufferChunk.length;
@@ -154,13 +148,13 @@ async function read_atleast(reader, n) {
         throw new Error(`Not enough data to read, expected ${n} bytes, got ${bytesRead}`);
     }
     return {
-        value: concat_typed_arrays(...buffs), // 确保返回Buffer
+        value: concat_typed_arrays(...buffs),
         done,
     };
 }
 
 async function read_coreservice_protocol_header(reader, cfg_uuid_str) {
-    let accumulatedHeader = Buffer.alloc(0); // 初始为空Buffer
+    let accumulatedHeader = Buffer.alloc(0);
     let totalReadLength = 0;
 
     async function ensure_bytes(count) {
@@ -233,8 +227,8 @@ async function read_coreservice_protocol_header(reader, cfg_uuid_str) {
     return {
         hostname,
         port,
-        data: accumulatedHeader.slice(headerTotalLength), // 返回Buffer
-        responseBytes: Buffer.from([version, 0]), // 返回Buffer
+        data: accumulatedHeader.slice(headerTotalLength),
+        responseBytes: Buffer.from([version, 0]),
     };
 }
 
@@ -274,7 +268,7 @@ async function connect_to_remote_host(hostname, port) {
     try {
         const remoteSocket = await timed_connect(hostname, port, connectionTimeout);
         remoteSocket.setNoDelay(SETTINGS.TCP_NODELAY);
-        remoteSocket.setKeepAlive(SETTINGS.TCP_KEEPALIVE, SETTINGS.TCP_KEEPALIVE_INTERVAL); // 使用配置的间隔
+        remoteSocket.setKeepAlive(SETTINGS.TCP_KEEPALIVE, SETTINGS.TCP_KEEPALIVE_INTERVAL);
         remoteSocket.bufferSize = parseInt(SETTINGS.BUFFER_SIZE, 10) * 1024;
         log('info', `Connected to remote ${hostname}:${port}`);
         return remoteSocket;
@@ -363,7 +357,6 @@ function convert_socket_to_web_streams(socket) {
                     if (socket.destroyed) {
                         return reject(new Error('Socket is destroyed, cannot write'));
                     }
-                    // 确保写入的数据是Buffer
                     socket.write((chunk instanceof Buffer) ? chunk : Buffer.from(chunk), (err) => {
                         if (err) reject(err); else resolve();
                     });
@@ -455,7 +448,7 @@ class Session {
             this.remoteSocket = await connect_to_remote_host(this.coreServiceDetails.hostname, this.coreServiceDetails.port);
             log('info', `Remote connected for ${this.id}`);
             
-            this.coreServiceResponseHeader = this.coreServiceDetails.responseBytes; // 已经是Buffer
+            this.coreServiceResponseHeader = this.coreServiceDetails.responseBytes;
             this.isInitialized = true;
 
             if (this.httpDownstreamResponse) {
@@ -481,14 +474,11 @@ class Session {
                 
             if (!this.isInitialized && this.nextExpectedSeq === 0) {
                 if (!await this.initializeCoreServiceConnection(nextData)) {
-                    // 如果初始化失败，则抛出错误以终止处理
                     throw new Error('Failed to initialize CoreService connection during packet processing');
                 }
-                 // 确保这里传递的是Buffer
                  await this._writeToRemoteSocket(this.coreServiceDetails.data);
 
             } else if (this.isInitialized) {
-                // 确保这里传递的是Buffer
                 await this._writeToRemoteSocket(nextData);
             } else {
                 log('warn', `Session ${this.id}: Received out-of-order packet seq=${this.nextExpectedSeq} before initialization completed.`);
@@ -515,7 +505,6 @@ class Session {
         try {
             if (!this.isCoreServiceHeaderSentToClient) {
                 log('debug', `Session ${this.id}: Sending CoreService response header to client: ${this.coreServiceResponseHeader.length} bytes`);
-                // 确保 coreServiceResponseHeader 是 Buffer
                 this.httpDownstreamResponse.write(this.coreServiceResponseHeader);
                 this.isCoreServiceHeaderSentToClient = true;
             }
@@ -577,7 +566,6 @@ class Session {
             throw new Error(`Session ${this.id}: Remote socket not available or destroyed.`);
         }
         return new Promise((resolve, reject) => {
-            // 确保写入的数据是Buffer
             this.remoteSocket.write((data instanceof Buffer) ? data : Buffer.from(data), (err) => {
                 if (err) {
                     log('error', `Session ${this.id}: Failed to write to remote: ${err.message}`);
@@ -601,9 +589,8 @@ class Session {
             this.httpDownstreamResponse.end();
             this.httpDownstreamResponse = null;
         }
-        // 清理所有缓冲的数据，并尝试释放到Buffer池（如果合适）
         this.pendingClientDataBuffers.forEach(buffer => {
-            if (buffer.length === SETTINGS.BUFFER_POOL_CHUNK_SIZE) { // 只释放固定大小的Buffer
+            if (buffer.length === SETTINGS.BUFFER_POOL_CHUNK_SIZE) {
                 bufferPool.release(buffer);
             }
         });
@@ -637,11 +624,10 @@ log('info', `Using IP: ${IP} for CoreService configuration.`);
 
 function generatePadding(min, max) {
     const length = min + Math.floor(Math.random() * (max - min + 1));
-    // 从Buffer池获取或创建Buffer，然后转换为base64
     const buffer = bufferPool.acquire(length);
-    buffer.fill('X', 0, Math.min(length, buffer.length)); // 只填充需要的部分
+    buffer.fill('X', 0, Math.min(length, buffer.length));
     const padding = buffer.toString('base64', 0, length);
-    bufferPool.release(buffer); // 释放Buffer回池
+    bufferPool.release(buffer);
     return padding;
 }
 
@@ -723,7 +709,6 @@ async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, ba
             req.destroy(new Error('Payload too large')); 
             return;
         }
-        // 直接将接收到的Buffer/Uint8Array存入数组，避免不必要的拷贝
         requestDataChunks.push(chunk);
     });
 
@@ -731,7 +716,7 @@ async function handleCoreServicePostRequest(req, res, sessionId, sequenceNum, ba
         if (postHeadersSent || req.destroyed) return; 
         
         try {
-            const completeDataBuffer = Buffer.concat(requestDataChunks); // 确保是Buffer
+            const completeDataBuffer = Buffer.concat(requestDataChunks);
             log('info', `Session ${sessionId}: Processing POST packet seq=${sequenceNum}, size=${completeDataBuffer.length}`);
             
             await session.handleClientDataPacket(sequenceNum, completeDataBuffer);
